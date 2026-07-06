@@ -23,7 +23,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/projects/";
           },
-        },{id: "post-the-mathematical-foundations-of-vector-spaces-in-data-retrieval",
+        },{id: "post-raii-in-high-performance-c",
+        
+          title: "RAII in High-Performance C++",
+        
+        description: "A comprehensive guide on Resource Acquisition Is Initialization (RAII) in high-performance C++ systems, exploring custom memory arenas, strided tensor views, exception safety, stack unwinding mechanics, and smart pointer overhead.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/raii-in-high-performance-cpp/";
+          
+        },
+      },{id: "post-the-mathematical-foundations-of-vector-spaces-in-data-retrieval",
         
           title: "The Mathematical Foundations of Vector Spaces in Data Retrieval",
         
