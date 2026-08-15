@@ -88,7 +88,7 @@ ninja.data = [{
               window.location.href = "/projects/5_project/";
             },},{id: "research-on-the-limits-of-small-language-models-in-vectorized-code-synthesis",
           title: 'On the Limits of Small Language Models in Vectorized Code Synthesis',
-          description: "An empirical investigation into the structural rule acquisition, execution boundaries, and parameter scaling dynamics of 0.5B–7B language models in vectorized code generation.",
+          description: "An in-depth empirical investigation into structural rule acquisition, the Execution Gap, and parameter scaling dynamics across 0.5B–7B language models in vectorized code synthesis.",
           section: "Research",handler: () => {
               window.location.href = "/research/limits-of-small-models-in-vectorized-code-synthesis/";
             },},{
