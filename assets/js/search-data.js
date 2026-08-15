@@ -16,6 +16,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
+        },{id: "nav-research",
+          title: "research",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/research/";
+          },
         },{id: "nav-projects",
           title: "projects",
           description: "",
@@ -86,6 +93,11 @@ ninja.data = [{
           description: "tensorflow implementation of Krizhevsky et al., (2012)",
           section: "Projects",handler: () => {
               window.location.href = "/projects/5_project/";
+            },},{id: "research-on-the-limits-of-small-language-models-in-vectorized-code-synthesis",
+          title: 'On the Limits of Small Language Models in Vectorized Code Synthesis',
+          description: "An empirical investigation into the structural rule acquisition, execution boundaries, and parameter scaling dynamics of 0.5B–7B language models in vectorized code generation.",
+          section: "Research",handler: () => {
+              window.location.href = "/research/limits-of-small-models-in-vectorized-code-synthesis/";
             },},{
         id: 'social-discord',
         title: 'Discord',
