@@ -91,6 +91,11 @@ ninja.data = [{
           description: "An in-depth empirical investigation into structural rule acquisition, the Execution Gap, and parameter scaling dynamics across 0.5B–7B language models in vectorized code synthesis.",
           section: "Research",handler: () => {
               window.location.href = "/research/limits-of-small-models-in-vectorized-code-synthesis/";
+            },},{id: "research-the-failure-modes-of-weight-space-model-merging-in-neural-code-synthesis",
+          title: 'The Failure Modes of Weight-Space Model Merging in Neural Code Synthesis',
+          description: "An empirical investigation into DARE-TIES, SLERP, and Task Arithmetic: why weight-space model merging between Code and Math models induces catastrophic syntactic interference in small language models.",
+          section: "Research",handler: () => {
+              window.location.href = "/research/failure-modes-of-model-merging-in-neural-code-synthesis/";
             },},{
         id: 'social-discord',
         title: 'Discord',
