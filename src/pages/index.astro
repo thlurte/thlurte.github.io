@@ -1,17 +1,128 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout flush>
+  <div
+    class="home-shell relative mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-5xl items-center px-5 sm:px-8"
+  >
+    <img
+      src="/drawings/rover.png"
+      alt=""
+      width="1408"
+      height="768"
+      class="corner-drawing corner-drawing--tr pointer-events-none absolute top-2 right-0 z-[1] w-[clamp(6.5rem,30%,15rem)] select-none sm:top-4 sm:w-[clamp(8rem,32%,17rem)]"
+      data-cycle="rover"
+      aria-hidden="true"
+    />
+    <img
+      src="/drawings/corner-br.png"
+      alt=""
+      width="1408"
+      height="768"
+      class="corner-drawing corner-drawing--br pointer-events-none absolute right-0 bottom-10 z-[1] w-[clamp(7rem,34%,17rem)] select-none sm:bottom-14 sm:w-[clamp(9rem,36%,19rem)]"
+      data-cycle="corner-br"
+      aria-hidden="true"
+    />
+    <img
+      src="/drawings/esp32.png"
+      alt=""
+      width="1408"
+      height="768"
+      class="corner-drawing corner-drawing--bl pointer-events-none absolute bottom-0 left-0 z-[1] w-[clamp(5.5rem,26%,13rem)] select-none sm:w-[clamp(7rem,28%,15rem)]"
+      aria-hidden="true"
+    />
+
+    <section class="relative z-10 max-w-xl py-16 sm:max-w-2xl sm:py-20">
+      <h1
+        class="font-sans text-4xl font-semibold tracking-tight text-ink opacity-0 animate-[rise_0.5s_ease_forwards] sm:text-5xl lg:text-6xl"
+      >
+        {site.name}
+      </h1>
+      <p
+        class="mt-5 font-serif text-lg leading-relaxed text-muted opacity-0 animate-[rise_0.5s_ease_forwards] sm:text-xl sm:leading-relaxed"
+        style="animation-delay: 80ms"
+      >
+        {site.description}
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  type Cycle = { key: string; sources: string[]; minMs: number; maxMs: number };
+
+  const cycles: Cycle[] = [
+    {
+      key: 'rover',
+      sources: [
+        '/drawings/rover.png',
+        '/drawings/rover-2.png',
+        '/drawings/rover-3.png',
+      ],
+      minMs: 14000,
+      maxMs: 22000,
+    },
+    {
+      key: 'corner-br',
+      sources: [
+        '/drawings/corner-br.png',
+        '/drawings/corner-br-3.png',
+        '/drawings/corner-br-4.png',
+      ],
+      minMs: 18000,
+      maxMs: 28000,
+    },
+  ];
+
+  function nextDelay(minMs: number, maxMs: number) {
+    return minMs + Math.random() * (maxMs - minMs);
+  }
+
+  for (const { key, sources, minMs, maxMs } of cycles) {
+    const img = document.querySelector<HTMLImageElement>(`[data-cycle="${key}"]`);
+    if (!img || sources.length < 2) continue;
+
+    for (const src of sources) {
+      const preload = new Image();
+      preload.src = src;
+    }
+
+    let index = 0;
+    const tick = () => {
+      let next = Math.floor(Math.random() * sources.length);
+      if (next === index) next = (index + 1) % sources.length;
+      index = next;
+      img.src = sources[index];
+      window.setTimeout(tick, nextDelay(minMs, maxMs));
+    };
+
+    window.setTimeout(tick, nextDelay(minMs * 0.4, minMs));
+  }
+</script>
+
+<style>
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .corner-drawing--bl {
+    mask-image: linear-gradient(to top right, #000 45%, transparent 92%);
+  }
+
+  .corner-drawing--tr {
+    mask-image: linear-gradient(to bottom left, #000 45%, transparent 92%);
+  }
+
+  .corner-drawing--br {
+    mask-image: linear-gradient(to top left, #000 48%, transparent 94%);
+  }
+</style>

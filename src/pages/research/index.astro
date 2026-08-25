@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentIndex from '../../components/ContentIndex.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection('research'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const items = notes.map((note) => ({
+  href: `/research/${note.id}`,
+  title: note.data.title,
+  image: note.data.image,
+}));
+---
+
+<BaseLayout
+  flush
+  title="Research"
+  description="Research notes on models, compilers, and synthesis."
+>
+  <ContentIndex heading="Research" items={items} />
+</BaseLayout>

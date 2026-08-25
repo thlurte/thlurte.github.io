@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags?: string[];
+  image?: string;
+}
+
+const { title, description, pubDate, tags = [], image } = Astro.props;
+---
+
+<BaseLayout flush title={title} description={description}>
+  <div
+    class:list={[
+      'grid min-h-[calc(100vh-8rem)]',
+      image
+        ? 'grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1.05fr)]'
+        : 'grid-cols-1',
+    ]}
+  >
+    <article class="mx-auto w-full max-w-3xl px-5 py-10 sm:px-6 sm:py-14 lg:mx-0 lg:max-w-none lg:px-14">
+      {
+        image && (
+          <div class="mb-10 lg:hidden">
+            <div class="stage-seam-h" aria-hidden="true">
+              <span class="stage-seam-h__line" />
+              <span class="stage-seam-h__tick" />
+            </div>
+            <div class="overflow-hidden bg-wash pt-5">
+              <img
+                src={image}
+                alt=""
+                width="1600"
+                height="1200"
+                class="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+          </div>
+        )
+      }
+
+      <header class="mb-8 border-b border-divider pb-6">
+        <time class="text-sm text-muted" datetime={pubDate.toISOString()}>
+          {
+            pubDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })
+          }
+        </time>
+        <h1 class="mt-2 max-w-[40rem] font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
+          {title}
+        </h1>
+        <p class="mt-3 max-w-[65ch] font-serif text-muted">{description}</p>
+        {
+          tags.length > 0 && (
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {tags.map((tag) => (
+                <li class="text-xs tracking-wide text-muted uppercase">{tag}</li>
+              ))}
+            </ul>
+          )
+        }
+      </header>
+
+      <div class="max-w-[65ch]">
+        <slot />
+      </div>
+    </article>
+
+    {
+      image && (
+        <aside class="stage-panel relative hidden min-h-[70vh] lg:block" aria-hidden="true">
+          <div class="stage-seam" aria-hidden="true">
+            <span class="stage-seam__line" />
+            <span class="stage-seam__tick" />
+          </div>
+          <div class="sticky top-0 h-[calc(100vh-4rem)] w-full bg-wash">
+            <img
+              src={image}
+              alt=""
+              width="1600"
+              height="1200"
+              class="h-full w-full object-cover object-center"
+            />
+          </div>
+        </aside>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .stage-panel {
+    isolation: isolate;
+  }
+
+  .stage-seam {
+    pointer-events: none;
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 2;
+    width: 1.25rem;
+  }
+
+  .stage-seam__line {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--color-divider) 8%,
+      var(--color-divider) 92%,
+      transparent 100%
+    );
+  }
+
+  .stage-seam__tick {
+    position: absolute;
+    top: 2.75rem;
+    left: 0;
+    width: 3px;
+    height: 2.75rem;
+    background: var(--color-accent);
+  }
+
+  .stage-seam-h {
+    position: relative;
+    height: 1.25rem;
+  }
+
+  .stage-seam-h__line {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--color-divider) 12%,
+      var(--color-divider) 88%,
+      transparent 100%
+    );
+  }
+
+  .stage-seam-h__tick {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2.75rem;
+    height: 3px;
+    translate: 0 -50%;
+    background: var(--color-accent);
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import Prose from '../../components/Prose.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('research');
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+---
+
+<ArticleLayout
+  title={note.data.title}
+  description={note.data.description}
+  pubDate={note.data.pubDate}
+  tags={[...note.data.tags]}
+  image={note.data.image}
+>
+  <Prose>
+    <Content />
+  </Prose>
+</ArticleLayout>

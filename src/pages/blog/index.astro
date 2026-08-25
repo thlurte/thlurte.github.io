@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentIndex from '../../components/ContentIndex.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const items = posts.map((post) => ({
+  href: `/blog/${post.id}`,
+  title: post.data.title,
+  image: post.data.image,
+}));
+---
+
+<BaseLayout flush title="Blog" description="Writing on systems, code, and adjacent ideas.">
+  <ContentIndex heading="Blog" items={items} />
+</BaseLayout>

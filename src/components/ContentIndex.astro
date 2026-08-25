@@ -1,0 +1,211 @@
+---
+interface Item {
+  href: string;
+  title: string;
+  image?: string;
+}
+
+interface Props {
+  heading: string;
+  items: Item[];
+}
+
+const { heading, items } = Astro.props;
+const first = items.find((i) => Boolean(i.image)) ?? items[0];
+---
+
+<section class="content-index" data-content-index>
+  <div
+    class="grid min-h-[calc(100vh-8rem)] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,1.05fr)]"
+  >
+    <div class="flex flex-col px-6 py-10 sm:px-10 lg:px-14 lg:py-14">
+      <h1 class="mb-10 font-sans text-3xl font-semibold tracking-tight sm:text-4xl">
+        {heading}
+      </h1>
+
+      {
+        items.length === 0 ? (
+          <p class="font-serif text-muted">Nothing here yet.</p>
+        ) : (
+          <>
+            <ul class="flex flex-col gap-1" role="list">
+              {items.map((item, i) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="index-link group relative block py-3 pr-4"
+                    data-index-link
+                    data-image={item.image ?? ''}
+                    data-active={item === first ? 'true' : i === 0 && !first?.image ? 'true' : 'false'}
+                  >
+                    <span class="index-title block font-sans text-xl font-semibold tracking-tight text-ink transition-colors duration-200 group-hover:text-accent group-focus-visible:text-accent sm:text-2xl">
+                      {item.title}
+                    </span>
+                    <span
+                      class="index-rule absolute bottom-2 left-0 h-px w-0 bg-accent transition-[width] duration-300"
+                      aria-hidden="true"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            {/* Mobile: designed seam above the painting */}
+            {
+              first?.image && (
+                <div class="stage-mobile mt-12 lg:hidden">
+                  <div class="stage-seam-h" aria-hidden="true">
+                    <span class="stage-seam-h__line" />
+                    <span class="stage-seam-h__tick" />
+                  </div>
+                  <div class="overflow-hidden bg-wash pt-5">
+                    <img
+                      data-stage-img-mobile
+                      src={first.image}
+                      alt=""
+                      class="aspect-[4/3] w-full object-cover"
+                    />
+                  </div>
+                </div>
+              )
+            }
+          </>
+        )
+      }
+    </div>
+
+    {
+      first?.image && (
+        <div class="stage-panel relative hidden min-h-[70vh] lg:block" aria-hidden="true">
+          <div class="stage-seam" aria-hidden="true">
+            <span class="stage-seam__line" />
+            <span class="stage-seam__tick" />
+          </div>
+          <div class="sticky top-0 h-[calc(100vh-4rem)] w-full bg-wash">
+            <img
+              data-stage-img
+              src={first.image}
+              alt=""
+              width="1600"
+              height="1200"
+              class="h-full w-full object-cover object-center"
+            />
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .index-link[data-active='true'] .index-title,
+  .index-link:hover .index-title,
+  .index-link:focus-visible .index-title {
+    color: var(--color-accent);
+  }
+
+  .index-link[data-active='true'] .index-rule,
+  .index-link:hover .index-rule,
+  .index-link:focus-visible .index-rule {
+    width: 2.5rem;
+  }
+
+  /* Vertical gallery seam between titles and painting */
+  .stage-panel {
+    isolation: isolate;
+  }
+
+  .stage-seam {
+    pointer-events: none;
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 2;
+    width: 1.25rem;
+  }
+
+  .stage-seam__line {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--color-divider) 8%,
+      var(--color-divider) 92%,
+      transparent 100%
+    );
+  }
+
+  .stage-seam__tick {
+    position: absolute;
+    top: 2.75rem;
+    left: 0;
+    width: 3px;
+    height: 2.75rem;
+    background: var(--color-accent);
+  }
+
+  /* Horizontal seam for mobile preview */
+  .stage-seam-h {
+    position: relative;
+    height: 1.25rem;
+  }
+
+  .stage-seam-h__line {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--color-divider) 12%,
+      var(--color-divider) 88%,
+      transparent 100%
+    );
+  }
+
+  .stage-seam-h__tick {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2.75rem;
+    height: 3px;
+    translate: 0 -50%;
+    background: var(--color-accent);
+  }
+</style>
+
+<script>
+  function initIndex(root: Element) {
+    const links = [...root.querySelectorAll<HTMLAnchorElement>('[data-index-link]')];
+    const stageImgs = [
+      ...root.querySelectorAll<HTMLImageElement>('[data-stage-img], [data-stage-img-mobile]'),
+    ];
+    if (!links.length || !stageImgs.length) return;
+
+    const setActive = (link: HTMLAnchorElement) => {
+      links.forEach((l) => l.setAttribute('data-active', l === link ? 'true' : 'false'));
+      const src = link.dataset.image;
+      if (!src) return;
+      for (const img of stageImgs) {
+        if (img.getAttribute('src') === src) continue;
+        img.style.opacity = '0.35';
+        img.onload = () => {
+          img.style.opacity = '1';
+        };
+        img.src = src;
+        if (img.complete) img.style.opacity = '1';
+      }
+    };
+
+    links.forEach((link) => {
+      link.addEventListener('mouseenter', () => setActive(link));
+      link.addEventListener('focus', () => setActive(link));
+    });
+  }
+
+  document.querySelectorAll('[data-content-index]').forEach(initIndex);
+</script>

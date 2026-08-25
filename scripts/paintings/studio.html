@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>p5.brush painting studio</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #111;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import * as brush from '/node_modules/p5.brush/dist/brush.esm.js';
+      import { hashSeed, paintComplex } from '/scripts/paintings/painter.mjs';
+
+      const params = new URLSearchParams(location.search);
+      const slug = params.get('slug') || 'untitled';
+      const theme = params.get('theme') === 'tech' ? 'tech' : 'post';
+      const w = Number(params.get('w') || 1400);
+      const h = Number(params.get('h') || 1050);
+
+      try {
+        paintComplex(brush, {
+          seed: hashSeed(`${theme}:${slug}`),
+          width: w,
+          height: h,
+          title: slug,
+          theme,
+        });
+        window.__PAINT_READY__ = true;
+        window.__PAINT_ERROR__ = null;
+      } catch (err) {
+        console.error(err);
+        window.__PAINT_READY__ = false;
+        window.__PAINT_ERROR__ = String(err?.stack || err);
+      }
+    </script>
+  </body>
+</html>
