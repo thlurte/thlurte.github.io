@@ -89,7 +89,7 @@ $$\forall v \in \text{AST}, \quad \text{Type}(v) \notin \{\text{For}, \text{Whil
 $$\forall a \in \text{AST.Attribute}, \quad \text{attr}(a) \notin \{\text{'apply'}, \text{'iterrows'}, \text{'itertuples'}, \text{'applymap'}, \text{'transform'}\}$$
 
 ### Invariant 3: Tensor Primitive Mapping
-$$\text{Logic}(x) \longrightarrow \{\text{np.where}, \text{np.select}, \text{np.random.choice}, \text{np.random.normal}, \text{pd.to_datetime}\}$$
+$$\text{Logic}(x) \longrightarrow \{\text{np.where}, \text{np.select}, \text{np.random.choice}, \text{np.random.normal}, \texttt{pd.to\_datetime}\}$$
 Conditional branching must be mapped to vector multiplexers (`np.where` for binary conditions, `np.select` for multi-case logic) rather than Python `if/else` statements evaluated per row.
 
 ---
@@ -114,7 +114,7 @@ We evaluated all models on the **GNORIL-BENCH v1.0** test suite (10 complex indu
 <div class="row mt-4 mb-4">
     <div class="col-sm">
         <figure class="text-center">
-            <img src="{{ '/assets/img/research/gnoril/base_vs_finetuned_scaling.png' | relative_url }}" class="img-fluid rounded border" style="max-width: 90%;" alt="Base Qwen vs Fine-Tuned Gnoril Scaling Chart">
+            <img src="/assets/img/research/gnoril/base_vs_finetuned_scaling.png" class="img-fluid rounded border" style="max-width: 90%;" alt="Base Qwen vs Fine-Tuned Gnoril Scaling Chart">
             <figcaption class="caption mt-2 text-muted"><b>Figure 1:</b> Scaling Dynamics Across Parameters — Base models plateau at 50% execution compliance. Fine-tuning compact sub-3B models incurs an over-specialization penalty, but unlocks an <b>emergent +40.0% leap</b> at 3B parameters (90.0% execution yield).</figcaption>
         </figure>
     </div>

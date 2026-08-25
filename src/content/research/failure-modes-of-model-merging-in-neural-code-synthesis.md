@@ -83,7 +83,7 @@ We evaluated all models on the **Gnoril-Bench v1.0** test suite (10 standard ind
 <div class="row mt-4 mb-4">
     <div class="col-sm">
         <figure class="text-center">
-            <img src="{{ '/assets/img/research/gnoril/model_merging_comparison.png' | relative_url }}" class="img-fluid rounded border" style="max-width: 90%;" alt="Model Merging Comparison Chart">
+            <img src="/assets/img/research/gnoril/model_merging_comparison.png" class="img-fluid rounded border" style="max-width: 90%;" alt="Model Merging Comparison Chart">
             <figcaption class="caption mt-2 text-muted"><b>Figure 1:</b> Execution Yield Comparison across Merge Techniques — DARE-TIES and SLERP collapse to 0% at 1.5B due to token repetition loops. Task Arithmetic preserves 50% syntax, but pure SFT remains dominant (70–80%).</figcaption>
         </figure>
     </div>
