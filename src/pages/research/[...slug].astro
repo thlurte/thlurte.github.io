@@ -1,6 +1,7 @@
 ---
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import Prose from '../../components/Prose.astro';
+import MarkdownEmbeds from '../../components/charts/MarkdownEmbeds';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -25,4 +26,5 @@ const { Content } = await render(note);
   <Prose>
     <Content />
   </Prose>
+  <MarkdownEmbeds client:load />
 </ArticleLayout>

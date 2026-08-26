@@ -25,6 +25,17 @@ That split—**AST** versus **Exec**—is the spine of this essay. The gap betwe
 
 Going in, three expectations. First: the AST–Exec gap will stay large once schemas are real. Second: SFT will raise Exec mainly by killing loop fallbacks, not by fixing every dtype, probability, and foreign-key bug. Third: at 0.5B, SFT may make answers longer and more “compiler-like,” which can truncate mid-file and *hurt* AST even when Exec inches up.
 
+```mermaid
+flowchart LR
+  prompt[Schema prompt] --> model[Small LM]
+  model --> code[generate num_rows]
+  code --> ast{AST gate}
+  ast -->|fail| loop[Loop / banned API]
+  ast -->|pass| sandbox[Sandbox + schema]
+  sandbox -->|fail| gap[Exec miss]
+  sandbox -->|pass| ok[Exec pass]
+```
+
 ---
 
 ## How we score, and what we ran
@@ -51,6 +62,28 @@ We evaluate the matching base and SFT checkpoints at 0.5B, 1.5B, and 3B. Same be
 | 1.5B-SFT | 85% | 48% | 37 pts | runtime, shapes, fewer loops |
 | 3B-base | 80% | 47% | 33 pts | runtime, loops |
 | **3B-SFT** | **91%** | **62%** | **29 pts** | runtime, some trunc/shape/type |
+
+```chart
+{
+  "type": "bar",
+  "title": "FastData Bench-100 — AST vs Exec",
+  "caption": "Hardened schema checks open a persistent gap between looking vectorized and passing the contract.",
+  "xKey": "model",
+  "series": [
+    { "key": "ast", "name": "AST %", "color": "#1f6feb" },
+    { "key": "exec", "name": "Exec %", "color": "#bf4a2e" }
+  ],
+  "height": 300,
+  "data": [
+    { "model": "0.5B-base", "ast": 77, "exec": 13 },
+    { "model": "0.5B-SFT", "ast": 66, "exec": 20 },
+    { "model": "1.5B-base", "ast": 85, "exec": 38 },
+    { "model": "1.5B-SFT", "ast": 85, "exec": 48 },
+    { "model": "3B-base", "ast": 80, "exec": 47 },
+    { "model": "3B-SFT", "ast": 91, "exec": 62 }
+  ]
+}
+```
 
 Read the table left to right, then read the gap column. Every row has a double-digit AST–Exec gap. The best system in this family, **3B-SFT**, still leaves nearly thirty points between “looks legal” and “passes the contract.” That is the first expectation confirmed. AST is not a proxy for deployable success on FastData Bench.
 
